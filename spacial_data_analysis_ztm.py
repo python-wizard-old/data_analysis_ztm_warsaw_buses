@@ -35,6 +35,19 @@ def covert_long_lat_into_geodataframe(df, crs='EPSG:4326'):
 
     return gdf
 
+def sort_vehicle_number_time(gdf):
+    gdf = gdf.sort_values(['VehicleNumber', 'Time'], ascending=[True, True])
+    return gdf
+
+def remove_duplicates(gdf):
+    gdf = gdf.drop_duplicates(subset=['VehicleNumber', 'Time'], keep='last')
+    return gdf
+
+def remove_vehicles_one_occurence(gdf):
+    gdf = gdf[gdf.duplicated('VehicleNumber', keep=False)]
+    return gdf
+
+
 
 def calculate_distance_timedelta(gdf):
 
@@ -48,10 +61,15 @@ def calculate_distance_timedelta(gdf):
     vehicles = to_check_list[:10]
 
     gdf_ = gpd.GeoDataFrame()
-    for vehicle_num in vehicles:
-        print(vehicle_num)
-        .loc[row_indexer, col_indexer] = value
-        gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'distance'] = vehicle.distance(vehicle.shift())
+    for vehicle_num in to_check_list:
+        print(vehicle_num, end=", ")
+        # .loc[row_indexer, col_indexer] = value
+        gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'distance'] = gdf[gdf['VehicleNumber'] == vehicle_num].distance(gdf[gdf['VehicleNumber'] == vehicle_num].shift())
+        gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'TimeDelta'] = \
+            gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'Time'] - \
+            gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'Time'].shift()
+
+        # vehicle['TimeDelta'] = vehicle['Time'] - vehicle['Time'].shift()
 
     return gdf
 
