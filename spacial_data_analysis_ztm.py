@@ -21,34 +21,43 @@ def load_files_directory_into_df(directory='./'):
             df_from_file = pd.read_csv(f)
             df = pd.concat([df, df_from_file], ignore_index=True)
 
-    # remove duplicates
+    # removing duplicates
 
     df = df.drop_duplicates()
+
+    # converting time in string to time in pandas datetime
     df['Time'] = pd.to_datetime(df['Time'])
     print('FInished importing files')
     return df
 
 
-def covert_long_lat_into_geodataframe(df, crs='EPSG:4326'):
+# converting longitude and latitude into geodataframe
+# ztm crs='EPSG:4326'
+def covert_long_lat_into_geodataframe(df, crs):
     geometry = [Point(xy) for xy in zip(df['Lon'], df['Lat'])]
     gdf = gpd.GeoDataFrame(df, geometry=geometry, crs=crs)  # “EPSG:4326”
 
     return gdf
 
+
+# sort table by VehicleNumber and Time
 def sort_vehicle_number_time(gdf):
     gdf = gdf.sort_values(['VehicleNumber', 'Time'], ascending=[True, True])
     return gdf
 
+
+# removing duplicates taking into account VehicleNumber and Time (which are key)
 def remove_duplicates(gdf):
     gdf = gdf.drop_duplicates(subset=['VehicleNumber', 'Time'], keep='last')
     return gdf
 
-def remove_vehicles_one_occurence(gdf):
+
+# removing vehicles with just one occurrence (you can't calculate anything)
+def remove_vehicles_one_occurrence(gdf):
     gdf = gdf[gdf.duplicated('VehicleNumber', keep=False)]
     return gdf
 
-
-
+# calculating distance between POINTS in the geometry column inside the GeoDataFrame and calculating timedeltas
 def calculate_distance_timedelta(gdf):
 
     ## to remove after testing
@@ -58,11 +67,17 @@ def calculate_distance_timedelta(gdf):
         if len(gdf[gdf["VehicleNumber"] == n]) > 5:
             to_check_list.append(n)
 
-    vehicles = to_check_list[:10]
+    # vehicles = to_check_list[:10]
 
-    gdf_ = gpd.GeoDataFrame()
+    # gdf_ = gpd.GeoDataFrame()
+    print('[', end="")
+    i = 0
+    dot = int(len(to_check_list)/50)
     for vehicle_num in to_check_list:
-        print(vehicle_num, end=", ")
+        if (i % dot) == 0:
+            print('.', end="")
+        i += 1
+        # print(vehicle_num, end=", ")
         # .loc[row_indexer, col_indexer] = value
         gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'distance'] = gdf[gdf['VehicleNumber'] == vehicle_num].distance(gdf[gdf['VehicleNumber'] == vehicle_num].shift())
         gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'TimeDelta'] = \
@@ -71,6 +86,7 @@ def calculate_distance_timedelta(gdf):
 
         # vehicle['TimeDelta'] = vehicle['Time'] - vehicle['Time'].shift()
 
+    print(']', end="")
     return gdf
 
     #     vehicle = gdf[gdf['VehicleNumber'] == vehicle_num]
@@ -83,6 +99,7 @@ def calculate_distance_timedelta(gdf):
     # return gdf_
 
 
+# calculate meters per second nad hours per second
 def calculate_mpers(gdf):
     gdf['seconds'] = gdf['TimeDelta'].dt.total_seconds()
     gdf['speed_m/s'] = gdf['distance'] / gdf['seconds']
@@ -91,6 +108,7 @@ def calculate_mpers(gdf):
     return gdf
 
 
+# assign points to districts
 def assign_points_to_districts(gdf, city):
 
     for i in city.index:
@@ -99,3 +117,16 @@ def assign_points_to_districts(gdf, city):
 
     return gdf
 
+
+# remove vehicles with extraodinary high speed (above 150 km/h)
+def remove_vehicle_extreme_speed(gdf):
+
+    set_vehicles = set(gdf["VehicleNumber"])
+    remove = []
+    for v in set_vehicles:
+        if gdf[gdf["VehicleNumber"] == v, "speed_km/h"] > 150:
+            remove.append(v)
+
+    gdf = gdf[~(gdf[remove])]
+
+    return gdf
