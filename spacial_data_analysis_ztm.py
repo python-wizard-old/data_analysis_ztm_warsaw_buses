@@ -103,7 +103,7 @@ def calculate_distance_timedelta(gdf):
 def calculate_mpers(gdf):
     gdf['seconds'] = gdf['TimeDelta'].dt.total_seconds()
     gdf['speed_m/s'] = gdf['distance'] / gdf['seconds']
-    gdf['speed_km/h'] = gdf['speed_m/s'] * 3.6
+    gdf['speed_km_h'] = gdf['speed_m/s'] * 3.6
 
     return gdf
 
@@ -118,15 +118,32 @@ def assign_points_to_districts(gdf, city):
     return gdf
 
 
-# remove vehicles with extraodinary high speed (above 150 km/h)
-def remove_vehicle_extreme_speed(gdf):
-
-    set_vehicles = set(gdf["VehicleNumber"])
+# remove vehicles with extraodinary high speed (above 150 km_h)
+def remove_vehicle_extreme_speed(gdf, speed_max):
+    set_vehicles = gdf.VehicleNumber.unique()
     remove = []
     for v in set_vehicles:
-        if gdf[gdf["VehicleNumber"] == v, "speed_km/h"] > 150:
+        if gdf[gdf["VehicleNumber"] == v].speed_km_h.max() > speed_max:
             remove.append(v)
 
-    gdf = gdf[~(gdf[remove])]
+    print(remove)
+
+    list_indexes = np.array([], dtype='int64')
+    for r in remove:
+        index_names = gdf_day[gdf_day['VehicleNumber'] == r].index
+        list_indexes = np.concatenate([list_indexes, index_names.values])
+
+    gdf = gdf.drop(list_indexes)
 
     return gdf
+
+
+# calculate percentage of vehicles that to above speed limit at least once
+def return_vehicles_above_speed(gdf, speed_limit):
+    vehicles_above = 0
+    for v in gdf.VehicleNumber.unique():
+        if gdf[gdf['VehicleNumber'] == v]['speed_km_h'].max() > speed_limit:
+            vehicles_above += 1
+
+    speeding_vehicles = (vehicles_above / len(gdf.VehicleNumber.unique())) * 100
+    return speeding_vehicles
