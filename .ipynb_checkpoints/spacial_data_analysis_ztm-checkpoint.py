@@ -5,51 +5,6 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import Point
 
-
-# imports for API savings
-import time
-from datetime import datetime
-# to handle  data retrieval
-import urllib3
-from urllib3 import request# to handle certificate verification
-import certifi# to manage json data
-import json# for pandas dataframes
-import pandas as pd# uncomment below if installation needed (not necessary in Colab)
-#!pip install certifi
-
-
-# function getting one request from api and saving it to file
-def load_api_save_file(directory=''):
-    r = http.request('GET', url)
-    print(r.status)
-
-    # decode json data into a dict object
-    data = json.loads(r.data.decode('utf-8'))
-
-    if (type(data['result']) == list):
-        df = pd.json_normalize(data, 'result')
-        df.head(10)
-
-        # datetime object containing current date and time
-        now = datetime.now()
-
-        # dd/mm/YY H:M:S
-        dt_string = now.strftime("%d-%m-%Y %H:%M:%S")
-        print("date and time =", dt_string)
-
-        file_name = "ztm_bus_data_"
-        file_name += dt_string
-        file = directory + '/' + file_name
-
-        df.to_csv(file)
-
-# function getting data from API and saving it to file
-def get_save_bulk(url, wait_seconds, amount_requests, directory=''):
-    http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
-    for i in range(amount_requests):
-        load_api_save_file(directory)
-        time.sleep(wait_seconds)
-
 def load_files_directory_into_df(directory='./'):
 
     df = pd.DataFrame(columns=['Lines', 'Lon', 'VehicleNumber', 'Time', 'Lat', 'Brigade'])
@@ -107,6 +62,7 @@ def remove_vehicles_one_occurrence(gdf):
 # calculating distance between POINTS in the geometry column inside the GeoDataFrame and calculating timedeltas
 def calculate_distance_timedelta(gdf):
 
+    ## to remove after testing
     set_vehicle_number = set(gdf["VehicleNumber"])
     to_check_list = []
     for n in set_vehicle_number:
@@ -135,6 +91,16 @@ def calculate_distance_timedelta(gdf):
     print(']', end="")
     return gdf
 
+    #     vehicle = gdf[gdf['VehicleNumber'] == vehicle_num]
+    #     vehicle['distance'] = vehicle.distance(vehicle.shift())
+    # #     y = s - s.shift()
+    #     vehicle['TimeDelta'] = vehicle['Time'] - vehicle['Time'].shift()
+    #     # here calculate timedeltas
+    #     gdf_ = pd.concat([gdf_, vehicle])
+    #
+    # return gdf_
+
+
 # calculate meters per second nad hours per second
 def calculate_mpers(gdf):
     gdf['seconds'] = gdf['TimeDelta'].dt.total_seconds()
@@ -162,7 +128,7 @@ def remove_vehicle_extreme_speed(gdf, speed_max=150):
         if gdf[gdf["VehicleNumber"] == v].speed_km_h.max() > speed_max:
             remove.append(v)
 
-    print("Removing following VehicleNumbers from the DataFrame: ", remove)
+    print(remove)
 
     list_indexes = np.array([], dtype='int64')
     for r in remove:
@@ -183,21 +149,3 @@ def return_vehicles_above_speed(gdf, speed_limit):
 
     speeding_vehicles = (vehicles_above / len(gdf.VehicleNumber.unique())) * 100
     return speeding_vehicles
-
-
-# function returning amount of speeding by district
-def speeding_by_district(gdf):
-
-    # Finding biggest values of speed_km_h with respect to District and VehicleNumber
-    df_speed_vehicle_district = gdf.groupby(['District', "VehicleNumber"]).speed_km_h.max()
-
-    # converting series from previous step back to DataFrame
-    df_speed_vehicle_district = pd.DataFrame(df_speed_vehicle_district)
-
-    # Converting District from index to column
-    df_speed_vehicle_district.reset_index(inplace=True, level = ['District'])
-
-    # Aplying mast for speed_km_h, and returning how many cases of speeding were found in each district
-    df_speed_vehicle_district = df_speed_vehicle_district[df_speed_vehicle_district.speed_km_h > 50].District.value_counts()
-
-    return df_speed_vehicle_district
