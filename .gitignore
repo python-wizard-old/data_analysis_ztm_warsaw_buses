@@ -1,0 +1,10 @@
+#
+.*
+!.gitignore
+tests_not_implemented.py
+#folders
+__pycache__/
+.pytest_cache
+.ipynb_checkpoints/
+.*/
+helping_notepads/
