@@ -30,10 +30,6 @@ pip install ./spacial_data_analysis_ztm
 
 import spacial_data_analysis_ztm
 
-# +
-#spacial_data_analysis_ztm.__file__
-# -
-
 # Ładowanie wcześniej ściągniętych danych zapisanych ze środka nocy 28.06.2021
 # Funkcja ta również usuwa duplikaty i konwertuje czas zapisany w ciągu znaków na pandas datetime
 
@@ -81,9 +77,7 @@ len(gdf_night)
 
 # Sprawdzanie pierwszych kilku wierszy
 
-type(gdf_night.VehicleNumber.iloc[0])
-
-gdf_night.columns
+gdf_night['distance']
 
 # Kalkulowanie metrów na sekundę - dzielenie metrów na różnicę w czasie (timedeltas)
 
@@ -132,6 +126,10 @@ gdf_day = spacial_data_analysis_ztm.remove_duplicates(gdf_day)
 gdf_day = spacial_data_analysis_ztm.remove_vehicles_one_occurrence(gdf_day)
 
 # Kalkulowanie dystansu pomiędzy punktami (POINT) w kolumnie geometry, oraz obliczanie różnic czasu na podstawie kolumny Time (TIMEDELTAS)
+#
+# # !Może zająć wiele czasu.
+# dla danych day_minute - 1-3 minuty;
+# dla danych day do 10 minut
 
 gdf_day = spacial_data_analysis_ztm.calculate_distance_timedelta(gdf_day)
 
@@ -181,14 +179,22 @@ warsaw = warsaw.to_crs(projected_crs_poland)
 # +
 fix, (ax1, ax2) = plt.subplots(ncols=2) 
 
-gdf_night['speed_km_h'].plot(ax=ax1)
-gdf_day['speed_km_h'].plot(ax=ax2)
+gdf_night['speed_km_h'].hist(ax=ax1)
+gdf_day['speed_km_h'].hist(ax=ax2)
+
 _ = plt.plot()
+
+# +
+# fix, (ax1, ax2) = plt.subplots(ncols=2) 
+
+# gdf_night['speed_km_h'].plot(ax=ax1)
+# gdf_day['speed_km_h'].plot(ax=ax2)
+# _ = plt.plot()
 # -
 
-gdf_day = spacial_data_analysis_ztm.remove_vehicle_extreme_speed(gdf_day, 100)
+gdf_day = spacial_data_analysis_ztm.remove_vehicle_extreme_speed(gdf_day, 110)
 
-gdf_night = spacial_data_analysis_ztm.remove_vehicle_extreme_speed(gdf_night, 100)
+gdf_night = spacial_data_analysis_ztm.remove_vehicle_extreme_speed(gdf_night, 110)
 
 # Po usunięciu tych danych rozkłady powinny wyglądać "normalnie".
 
@@ -208,8 +214,6 @@ _ = plt.plot()
 gdf_night = gdf_night.reset_index(drop=True)
 
 gdf_day = gdf_day.reset_index(drop=True)
-
-
 
 # #### Obliczanie na podstawie wartości POINT, do której dzielnicy należy dany punkt i dodawanie tej dzielnicy do kolumny District.
 
@@ -238,8 +242,8 @@ plt.rcParams['figure.figsize'] = [30, 15]
 fig, ax = plt.subplots()
 # ax.get_legend().remove()
 warsaw.plot(ax=ax, legend=False)
-gdf_night[gdf_night.speed_km_h > 50].plot(ax=ax, color='red', markersize=3, legend=False)
-gdf_day[gdf_day.speed_km_h > 50].plot(ax=ax, color='orange', markersize=2, legend=False)
+gdf_night[gdf_night.speed_km_h > 50].plot(ax=ax, color='red', markersize=3.4, legend=False)
+gdf_day[gdf_day.speed_km_h > 50].plot(ax=ax, color='orange', markersize=1.4, legend=False)
 plt.plot(legend=False)
 plt.rcParams['figure.figsize'] = [16, 8]
 

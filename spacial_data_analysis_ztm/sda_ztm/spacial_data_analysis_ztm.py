@@ -128,7 +128,9 @@ def calculate_distance_timedelta(gdf):
         i += 1
         # print(vehicle_num, end=", ")
         # .loc[row_indexer, col_indexer] = value
-        gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'distance'] = gdf[gdf['VehicleNumber'] == vehicle_num].distance(gdf[gdf['VehicleNumber'] == vehicle_num].shift())
+        gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'distance'] = \
+            gdf[gdf['VehicleNumber'] == vehicle_num].distance(gdf[gdf['VehicleNumber'] == vehicle_num].shift())
+
         gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'TimeDelta'] = \
             gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'Time'] - \
             gdf.loc[gdf['VehicleNumber'] == vehicle_num, 'Time'].shift()
