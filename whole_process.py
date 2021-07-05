@@ -39,7 +39,7 @@ import spacial_data_analysis_ztm
 
 df_night = spacial_data_analysis_ztm.load_files_directory_into_df('data/28.06.2021_night_minute')
 
-type(df_night['geometry'].iloc[0])
+df_night = df_night.drop(columns = ['Unnamed: 0'])
 
 # Konwertowanie Lon i Lat (długość i szerokość geograficzna) z DataFrame na typ POINT w GeoDataFrame (rozbudowane DataFrame z biblioteki Geopandas).
 
@@ -83,7 +83,7 @@ len(gdf_night)
 
 type(gdf_night.VehicleNumber.iloc[0])
 
-gdf_night.head()
+gdf_night.columns
 
 # Kalkulowanie metrów na sekundę - dzielenie metrów na różnicę w czasie (timedeltas)
 
@@ -100,6 +100,8 @@ gdf_night.head()
 df_day = spacial_data_analysis_ztm.load_files_directory_into_df('data/28.06.2021_day_minute')
 
 # Konwertowanie Lon i Lat (długość i szerokość geograficzna) z DataFrame na typ POINT w GeoDataFrame (rozbudowane DataFrame z biblioteki Geopandas).
+
+df_day = df_day.drop(columns = ['Unnamed: 0'])
 
 gdf_day = spacial_data_analysis_ztm.covert_long_lat_into_geodataframe(df_day, ztm_crs)
 

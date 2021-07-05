@@ -141,8 +141,8 @@ def calculate_distance_timedelta(gdf):
 # calculate meters per second nad hours per second
 def calculate_mpers(gdf):
     gdf['seconds'] = gdf['TimeDelta'].dt.total_seconds()
-    gdf['speed_m/s'] = gdf['distance'] / gdf['seconds']
-    gdf['speed_km_h'] = gdf['speed_m/s'] * 3.6
+    gdf['speed_m_s'] = gdf['distance'] / gdf['seconds']
+    gdf['speed_km_h'] = gdf['speed_m_s'] * 3.6
 
     return gdf
 
