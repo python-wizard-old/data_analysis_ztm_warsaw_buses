@@ -110,7 +110,7 @@ def calculate_distance_timedelta(gdf):
     set_vehicle_number = set(gdf["VehicleNumber"])
     to_check_list = []
     for n in set_vehicle_number:
-        if len(gdf[gdf["VehicleNumber"] == n]) > 5:
+        if len(gdf[gdf["VehicleNumber"] == n]) > 1:
             to_check_list.append(n)
 
     # vehicles = to_check_list[:10]
@@ -118,7 +118,10 @@ def calculate_distance_timedelta(gdf):
     # gdf_ = gpd.GeoDataFrame()
     print('[', end="")
     i = 0
-    dot = int(len(to_check_list)/50)
+    if len(to_check_list) < 50:
+        dot = 1
+    else:
+        dot = int(len(to_check_list)/50)
     for vehicle_num in to_check_list:
         if (i % dot) == 0:
             print('.', end="")

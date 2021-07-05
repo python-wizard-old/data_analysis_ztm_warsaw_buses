@@ -39,11 +39,12 @@ import spacial_data_analysis_ztm
 
 df_night = spacial_data_analysis_ztm.load_files_directory_into_df('data/28.06.2021_night_minute')
 
+type(df_night['geometry'].iloc[0])
+
 # Konwertowanie Lon i Lat (długość i szerokość geograficzna) z DataFrame na typ POINT w GeoDataFrame (rozbudowane DataFrame z biblioteki Geopandas).
 
 # oryginalny CRS ze strony ztm crs='EPSG:4326'
 ztm_crs = 'EPSG:4326'
-
 gdf_night = spacial_data_analysis_ztm.covert_long_lat_into_geodataframe(df_night, ztm_crs)
 
 # Sprawdzanie czy dane zostały załadowanie
@@ -79,6 +80,8 @@ gdf_night = spacial_data_analysis_ztm.calculate_distance_timedelta(gdf_night)
 len(gdf_night)
 
 # Sprawdzanie pierwszych kilku wierszy
+
+type(gdf_night.VehicleNumber.iloc[0])
 
 gdf_night.head()
 
@@ -322,7 +325,7 @@ districts_speeding_day[districts_speeding_day > 5]
 
 dis = districts_speeding_night.idxmax(axis=0, skipna=True)
 
-plt.rcParams['figure.figsize'] = [20, 10]
+plt.rcParams['figure.figsize'] = [16, 8]
 fig, ax = plt.subplots()
 warsaw[warsaw['name'] == dis].plot(ax=ax, label=dis, legend=False)
 gdf_night[(gdf_night.speed_km_h > 50) & (gdf_night.District == dis)].plot(ax=ax, color='red', markersize=8, legend=False)
@@ -332,7 +335,7 @@ _ = plt.plot(legend=False)
 
 dis = districts_speeding_day.idxmax(axis=0, skipna=True)
 
-plt.rcParams['figure.figsize'] = [20, 10]
+plt.rcParams['figure.figsize'] = [16, 8]
 fig, ax = plt.subplots()
 warsaw[warsaw['name'] == dis].plot(ax=ax, label=dis, legend=False)
 gdf_day[(gdf_day.speed_km_h > 50) & (gdf_day.District == dis)].plot(ax=ax, color='red', markersize=8, legend=False)
