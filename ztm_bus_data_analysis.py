@@ -37,7 +37,7 @@ df_night = spacial_data_analysis_ztm.load_files_directory_into_df('data/28.06.20
 
 df_night = df_night.drop(columns = ['Unnamed: 0'])
 
-# Konwertowanie Lon i Lat (długość i szerokość geograficzna) z DataFrame na typ POINT w GeoDataFrame (rozbudowane DataFrame z biblioteki Geopandas).
+# Konwertowanie Lon i Lat (długość i szerokość geograficzna) z DataFrame na typ POINT w GeoDataFrame (rozbudowane DataFrame z biblioteki Geopandas - geopandas używa biblioteke shapely).
 
 # oryginalny CRS ze strony ztm crs='EPSG:4326'
 ztm_crs = 'EPSG:4326'
@@ -233,6 +233,16 @@ gdf_night
 
 _ = warsaw.plot()
 
+
+
+# #### Ilość autobusów w dzień i w nocy
+
+# autobusy w dzień
+len(gdf_day.VehicleNumber.unique())
+
+# autobusy w nocy
+len(gdf_night.VehicleNumber.unique())
+
 # ##### Mapa z miejscami gdzie przekraczana jest prędkość
 # czerwony noc
 #
@@ -251,7 +261,9 @@ plt.rcParams['figure.figsize'] = [16, 8]
 
 
 
-# ###### Porównanie najwiekszej prędkości i średniej prędkości (dla wszystkich autobusów) z dnia i tych samych wartości z nocy.
+# ##### Porównanie najwiekszej prędkości i średniej prędkości (dla wszystkich autobusów) z dnia i tych samych wartości z nocy.
+
+
 
 # noc
 speed_max_night = gdf_night['speed_km_h'].max()
@@ -259,6 +271,12 @@ speed_max_night = gdf_night['speed_km_h'].max()
 speed_max_day = gdf_day['speed_km_h'].max()
 av_speed_night = gdf_night['speed_km_h'].mean()
 av_speed_day = gdf_day['speed_km_h'].mean()
+
+#maksymalna prędkość w nocy
+speed_max_night
+
+#maksymalna prędkość w dzień
+speed_max_day
 
 plt.rcParams['figure.figsize'] = [10, 5]
 plt.tight_layout()
@@ -348,5 +366,21 @@ gdf_day[(gdf_day.speed_km_h > 50) & (gdf_day.District == dis)].plot(ax=ax, color
 _ = plt.plot(legend=False)
 
 # Tutaj widać, że zdecydowana większość przekroczeń prędkości była na S8, co może oznaczać, że prędkość w sensie prawnym, nie była przekroczona.
+
+# ### Konkluzje
+#
+# Bazując na danych z 28.06.2021, z nocy (początek pomiaru 0:44) i dnia (początek pomiaru 16:07), i autobusy nocne i dzienne przekraczają prędkość.
+#
+# W nocy prawie 50% (49,43%) pojazdów chociaż raz na sowojej trasi eprzekroczyła prędkość w czasie pomiaru. Jeśli chodzi o autobusy dzienne dotyczy to 39,05% pojazdów.
+#
+# W dzień dzielnicą gdzie najczęściej autobusy przekraczały prędkość była Praga Północ (83 pojazdy), prawdopodobnie ze względu na trasę S8. Na terenie Ochoty prędkość przekroczyło tylko 6 razy.
+#
+# W nocy najczęściej autobusy pędziły na Białołęce (16 pojazdów), bardziej na zachodniej części, ale nie na jednej konkretnej trasie czy w jednym konkretnym miejscu.
+#
+# W dzień jest więcej przekroczeń prędkości w sensie absolutnym, dlatego, że po prostu dużo więcej autobusów jest na drodze. Po obróbce danych jest 1457 pojazdów w dzień i 176 w nocy, podczas pobierania danych z serwisu.
+# Maksymalna prędkość w dzień jest większa i wynosi 104 km/h na 81,3 km/h w nocy. Ale podejrzewam, że część odczytów lokalizacji GPS jest błędna co daje złe prędkości (autobus wydaje się przemieszczać, ale po prostu podał błędną lokalizację, a tak naprawdę poruszał się z mniejszą prędkością).
+# Jako prędkość graniczną, za szybką dla autobusu wyznaczyłem jako 110km/h i wszystkie pojazdy powyżej tej prędkości usunąłem z bazy danych.
+# Możliwe, że w nocy jest mniej zakłóceń i odczyty GPS są bardziej precyzyjne, co powoduje bardziej rzetelne dane. Potwierdzeniem dla tej tezy byłoby to, że w nocy maksymalną prędkością było 81,3 km/h co jest bardzo prawdopodobne, a 104 km/h z dnia już mniej. 
+#
 
 
