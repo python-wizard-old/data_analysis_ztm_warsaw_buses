@@ -1,19 +1,3 @@
-# -*- coding: utf-8 -*-
-# ---
-# jupyter:
-#   jupytext:
-#     formats: ipynb,py:light
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.11.3
-#   kernelspec:
-#     display_name: nlp
-#     language: python
-#     name: nlp
-# ---
-
 # # Analiza danych przejazdów autobusów ZTM
 
 # Importowanie bibliotek
@@ -25,8 +9,6 @@ import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = [16, 8]
 
 # ### Instalowanie i importowanie własnej biblioteki
-
-pip install ./spacial_data_analysis_ztm
 
 import spacial_data_analysis_ztm
 
@@ -73,13 +55,19 @@ gdf_night = spacial_data_analysis_ztm.remove_vehicles_one_occurrence(gdf_night)
 
 gdf_night = spacial_data_analysis_ztm.calculate_distance_timedelta(gdf_night)
 
+len(gdf_night)
+
 # Sprawdzanie pierwszych kilku wierszy
+
+gdf_night.head()
 
 # Kalkulowanie metrów na sekundę - dzielenie metrów na różnicę w czasie (timedeltas)
 
 gdf_night = spacial_data_analysis_ztm.calculate_mpers(gdf_night)
 
 gdf_night.head()
+
+
 
 # ## Dane z dnia
 # Ładowanie wcześniej ściągniętych danych zapisanych z dnia 28.06.2021.
@@ -161,6 +149,8 @@ warsaw = warsaw.iloc[1:]
 projected_crs_poland = 'epsg:2178'
 
 warsaw = warsaw.to_crs(projected_crs_poland)
+
+
 
 # #### Usuwanie prędkości zbyt dużych które muszą wynikać z błędów w danych
 #
@@ -355,11 +345,4 @@ _ = plt.plot(legend=False)
 # Możliwe, że w nocy jest mniej zakłóceń i odczyty GPS są bardziej precyzyjne, co powoduje bardziej rzetelne dane. Potwierdzeniem dla tej tezy byłoby to, że w nocy maksymalną prędkością było 81,3 km/h co jest bardzo prawdopodobne, a 104 km/h z dnia już mniej. 
 #
 
-# ### Profiler
-# Wyniki profilera znajdują się w katalogu profiler_testing.
-#
-# Funkcją która zabiera nawięcej czasu wykonania, napisaną przeze mnie jest calculate_distance_timedelta() (64%), nie jest to dziwne, dlatego, że dla każdego pojazdu w bazie, porównywane jest położenie z położeniem z poprzedniej próbki danych. W środku są to dosyć skomplikowane działania matematyczne wykonywane przez geopandas/shapely. Co ciekawe jądro myśli zanim nawet zacznie wykonywać te obliczenia. Prawdobodonie alokowana jest wtedy pamięć. Napisałem prosty progres bar, który rusza się dopiero kiedy zaczyna liczyć, a na początku nie porusza się w ogóle.
-#
-# Innymi funkcjami, które mają duża złożonośc obliczeniową są: return_vehicles_above_speed() i remove_vehicles_extreme_speed() (obie po ~ 10%).
-#     
-# Funkcjami wewnętrzymi, które mają duży czas wykonania są: __get_item__ i new_method z pandas.    
+
