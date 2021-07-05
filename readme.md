@@ -2,6 +2,7 @@
 ## Spis Treści
 
 * [Funkcjonalność](#funkcjonalność)
+* [Wyniki i konkluzje](#wyniki_konkluzje)
 * [Użyte biblioteki](#biblioteki)
 * [Dane](#dane)
 * [Testy](#testy)
@@ -12,6 +13,8 @@ Biblioteka łącząca, już istniejące narzędzia, i używający ją zeszyt jup
 Sprawdza jaki procent autobusów przekracza prędkość, w jakich dzielnicach najwięcej do tego dochodzi.
 Te konkluzje bazują na tym co wylicza biblioteka, czyli prędkość pojazdu wyliczona na podstawie poprzedniego wystąpienia danego pojazdu w danych i czasu tego wystąpienia.
 
+## Wyniki i konkluzje
+W zeszycie jupiterowym ztm_bus_data_analysis.ipynb.
 
 ## Użyte biblioteki
 Całość jest napisana w Pythonie 3.

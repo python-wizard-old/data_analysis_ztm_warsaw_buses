@@ -318,16 +318,22 @@ districts_speeding_night[districts_speeding_night > 5]
 
 districts_speeding_day[districts_speeding_day > 5]
 
-# #### Przekroczone prędkości nałożone na mapy
+# #### Przekroczone prędkości nałożone na mapy dzielnic
+#
+# W przypadku dnia jest to Praga Północ a w nocy Białołeka.
 #
 
 dis = districts_speeding_night.idxmax(axis=0, skipna=True)
+
+# Białołeka z miejscami gdzie przekroczona była prędkość.
 
 plt.rcParams['figure.figsize'] = [16, 8]
 fig, ax = plt.subplots()
 warsaw[warsaw['name'] == dis].plot(ax=ax, label=dis, legend=False)
 gdf_night[(gdf_night.speed_km_h > 50) & (gdf_night.District == dis)].plot(ax=ax, color='red', markersize=8, legend=False)
 _ = plt.plot(legend=False)
+
+# Praga Połódnie z miejscami gdzie przekroczona była prędkość.
 
 dis = districts_speeding_day.idxmax(axis=0, skipna=True)
 
