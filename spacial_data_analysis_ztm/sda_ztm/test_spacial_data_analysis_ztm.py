@@ -146,11 +146,11 @@ def test_distance_timedeltas():
     assert gdf6.shape == (4, 10)
 
 
-
 # Kalkulowanie metrów na sekundę - dzielenie metrów na różnicę w czasie (timedeltas)
 
 gdf7 = gdf6.copy()
 gdf7 = spacial_data_analysis_ztm.calculate_mpers(gdf7)
+
 
 def test_speed():
     # Dystans gmaps 693,68 m
@@ -190,7 +190,6 @@ warsaw_file = "https://raw.githubusercontent.com/andilabs/warszawa-dzielnice-geo
 
 # dane z pliku w katalogu data/warsaw
 # warsaw_file = "data/warsaw/warszawa-dzielnice.geojson"
--
 
 warsaw = gpd.read_file(warsaw_file)
 
@@ -203,3 +202,16 @@ projected_crs_poland = 'epsg:2178'
 
 warsaw = warsaw.to_crs(projected_crs_poland)
 
+# #### Obliczanie na podstawie wartości POINT, do której dzielnicy należy dany punkt i dodawanie tej dzielnicy do kolumny District.
+gdf8 = gdf7.copy()
+
+for i in warsaw.index:
+    pip = gdf8.within(warsaw.loc[i, 'geometry'])
+    gdf8.loc[pip, 'District'] = warsaw.loc[i, 'name']
+
+def test_district():
+    # Uniwersytet Warszawski kampus główny jest w śródmieściu
+    assert gdf8.District.iloc[1] == 'Śródmieście'
+
+    # Rondo Waszyngtona jest na Pradze Połódnie
+    assert gdf8.District.iloc[2] == 'Praga Południe'
