@@ -1,4 +1,6 @@
-# Analiza danych o autobusach z API ZTM
+# Przekraczanie prędkości przez autobusy ZTM.
+Analiza prędkości autobusów i innych danych z API ZTM.
+
 ## Spis Treści
 
 * [Funkcjonalność](#funkcjonalność)
@@ -14,16 +16,16 @@ Sprawdza jaki procent autobusów przekracza prędkość, w jakich dzielnicach na
 Te konkluzje bazują na tym co wylicza biblioteka, czyli prędkość pojazdu wyliczona na podstawie poprzedniego wystąpienia danego pojazdu w danych i czasu tego wystąpienia.
 
 ## Wyniki i konkluzje
-W zeszycie jupiterowym ztm_bus_data_analysis.ipynb.
+W zeszycie jupiterowym [ztm_bus_data_analysis.ipynb](ztm_bus_data_analysis.ipynb).
 
 ## Użyte biblioteki
 Całość jest napisana w Pythonie 3.
 Użyte biblioteki to Pandas i Geopandas. Geopandas rozbudowuje funkcje Pandasa do działań przestrzennych, używając Shapely.
-Oczywiście Pandas samo wykożystuje wiele narzędzi, np używa tablic Numpy do przechowywania części danych.
+Oczywiście Pandas samo wykorzystuje wiele narzędzi, np używa tablic Numpy do przechowywania części danych.
 
 ## Dane
 Dane przechowywane są w katalogu data. Są to zapisane dane z API ZTM w dniu 28.06.2021.
-Dane w czasie rzeczywistym moża pobrać pod adresem:
+Dane w czasie rzeczywistym można pobrać pod adresem:
 https://api.um.warszawa.pl
 
 W katalogu dane znajduję się również mapa Warszawy z dzielnicami, która służy do sprawdzania w której dzielnicy znajduje się autobus.
