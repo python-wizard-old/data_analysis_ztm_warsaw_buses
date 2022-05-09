@@ -35,10 +35,12 @@ https://raw.githubusercontent.com/andilabs/warszawa-dzielnice-geojson/master/war
 
 ## Testy
 Test biblioteki znajduje się w folderze tym co sama biblioteka, czyli:
-spacial_data_analysis_ztm/sda_ztm/test_spacial_data_analysis_ztm.py
+[./spacial_data_analysis_ztm/sda_ztm/test_spacial_data_analysis_ztm.py](./spacial_data_analysis_ztm/sda_ztm/test_spacial_data_analysis_ztm.py)
 
 Przykładowy wynik powyższego testu zrobiony w środowisku Pycharm znajduje się w folderze:
-/profiler_testing/Test Results - pytest_in_test_spacial_data_analysis_ztm_py.html
+
+[./profiler_testing/TestResults-pytest_in_test_spacial_data_analysis_ztm_py.html](./profiler_testing/TestResults-pytest_in_test_spacial_data_analysis_ztm_py.html).
 
 ## Profiler
-Wywołany w środowisku Pycharm. Wyniki zapisane w katalogu profiler_tesitng.
+Wywołany w środowisku Pycharm. Wyniki zapisane w katalogu:
+[./profiler_testing](./profiler_testing).
