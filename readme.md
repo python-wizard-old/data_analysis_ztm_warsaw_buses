@@ -31,10 +31,20 @@ https://raw.githubusercontent.com/andilabs/warszawa-dzielnice-geojson/master/war
 
 
 ## Tests
+There are about 10 tests written in pytest. Among them are tests covering:
+- Whether data is loading correctly into a DataFrame object.
+- Loading raw test data from file into DataFrame object.
+- Converting Longitude and Latitude from two columns in the DataFrame to POINT type in GeoDataFrame (expanded DataFrame from Geopandas library).
+- Removing duplicate data and vehicles that show up only once (API over time returns them only once). Can't calculate movement and speed on vehicles appearing only once.
+- Calculating distance between points (POINT type) in the geometry column and calculating time differences based on column Time (TIMEDELTAS).
+- Calculating meters per second
+- Calculating within which district does point (POINT type) belong to on the map of Warsaw
+
+
 The tests are saved in the library folder, specifically:
 [./spacial_data_analysis_ztm/sda_ztm/test_spacial_data_analysis_ztm.py](./spacial_data_analysis_ztm/sda_ztm/test_spacial_data_analysis_ztm.py)
 
-Example result of above test executed in the Pycharm environment can be found here:
+Example result of above tests executed in the Pycharm environment can be found here:
 
 [./profiler_testing/TestResults-pytest_in_test_spacial_data_analysis_ztm_py.html](./profiler_testing/TestResults-pytest_in_test_spacial_data_analysis_ztm_py.html).
 
