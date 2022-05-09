@@ -1,4 +1,4 @@
-# How many public busses are speeding in Warsaw
+# Are Warsaw public busses speeding?
 
 Data analysis of Public Transport Authority (ZTM) buses in Warsaw, Poland.
 
